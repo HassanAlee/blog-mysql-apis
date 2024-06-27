@@ -10,19 +10,20 @@ const registerUser = async (req, res) => {
     country = "",
     image = "",
   } = req.body;
+  //   console.log(name, email);
+  //   console.log(req.body);
   try {
     const user = await mySqlPool.query(registerQuery, [
       name,
       email,
       password,
-      info,
       country,
+      info,
       image,
     ]);
     return res.status(200).json({ message: "User registered successfully!" });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: error.message || "Internal server error" });
   }
 };
 module.exports = { registerUser };

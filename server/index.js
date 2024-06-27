@@ -5,6 +5,7 @@ const userRoutes = require("./routes/user.routes.js");
 const app = express();
 const port = process.env.PORT;
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 // routes
 app.use("/user", userRoutes);
 // db connection
