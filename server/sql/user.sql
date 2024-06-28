@@ -9,6 +9,11 @@ const userTableQuery = `
     image VARCHAR(50)
   );
 `;
+
 const registerQuery =
   "INSERT INTO users(name,email,password,country,info,image) VALUES (?,?,?,?,?,?)";
-module.exports = { registerQuery };
+
+const checkUserQuery =
+"SELECT * FROM users WHERE email=?"
+
+module.exports = { registerQuery,checkUserQuery };
