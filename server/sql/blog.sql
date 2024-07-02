@@ -14,4 +14,40 @@ FOREIGN KEY(authorId) REFERENCES users(id) ON DELETE CASCADE
 const addBlogQuery=`
 INSERT INTO blogs(title,description,image,category,authorId) values (?,?,?,?,?);
 `;
-module.exports={addBlogQuery}
+const getAllBlogsQuery=`
+SELECT 
+    blogs.id,
+    blogs.title AS blog_title,
+    blogs.image AS blog_image,
+    blogs.description,
+    blogs.category,
+    users.name AS author_name,
+    users.image AS author_image
+FROM 
+    blogs
+JOIN
+    users
+ON
+    users.id=blogs.authorId
+;
+`;
+const getSingleBlogQuery=`
+SELECT 
+    blogs.id,
+    blogs.title AS blog_title,
+    blogs.image AS blog_image,
+    blogs.description,
+    blogs.category,
+    users.name AS author_name,
+    users.image AS author_image
+FROM 
+    blogs
+JOIN 
+    users 
+ON 
+    users.id = blogs.authorId
+WHERE 
+    blogs.id = ?;
+;
+`;
+module.exports={addBlogQuery,getAllBlogsQuery,getSingleBlogQuery}
