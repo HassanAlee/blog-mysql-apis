@@ -2,6 +2,7 @@ const {
   addBlogQuery,
   getAllBlogsQuery,
   getSingleBlogQuery,
+  getAuthorBlogsQuery,
 } = require("../sql/blog.sql");
 const mySqlPool = require("../config/db");
 const addBlog = async (req, res) => {
@@ -37,4 +38,16 @@ const getSingleBlog = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-module.exports = { addBlog, getAllBlogs, getSingleBlog };
+const getAuthorBlogs = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [blogs] = await mySqlPool.query(getAuthorBlogsQuery, [id]);
+    if (blogs.length == 0) {
+      return res.status(200).json({ message: "No blog found" });
+    }
+    return res.status(200).json({ blogs });
+  } catch (error) {
+    return res.status(200).json({ message: "Internal server error" });
+  }
+};
+module.exports = { addBlog, getAllBlogs, getSingleBlog, getAuthorBlogs };
