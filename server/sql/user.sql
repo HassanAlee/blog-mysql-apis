@@ -14,6 +14,7 @@ const registerQuery =
   "INSERT INTO users(name,email,password,country,info,image) VALUES (?,?,?,?,?,?)";
 
 const checkUserQuery =
-"SELECT * FROM users WHERE email=?"
+"SELECT * FROM users WHERE email=? OR id=?"
 
-module.exports = { registerQuery,checkUserQuery };
+const updateUserQuery=`UPDATE users SET ${setClause.join(', ')} WHERE id = ?`;
+module.exports = { registerQuery,checkUserQuery,updateUserQuery };

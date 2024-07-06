@@ -1,5 +1,9 @@
 const mySqlPool = require("../config/db.js");
-const { registerQuery, checkUserQuery } = require("../sql/user.sql");
+const {
+  registerQuery,
+  checkUserQuery,
+  updateUserQuery,
+} = require("../sql/user.sql");
 const { generatePassword, checkPassword } = require("../utils/password.js");
 const jwt = require("jsonwebtoken");
 // register user
@@ -29,7 +33,7 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const [user] = await mySqlPool.query(checkUserQuery, [email]);
+    const [user] = await mySqlPool.query(checkUserQuery, [email, ""]);
     if (user.length == 0) {
       return res.status(400).json({ message: "Wrong credentials" });
     }
@@ -51,4 +55,33 @@ const loginUser = async (req, res) => {
     res.status(500).json({ message: error.message || "Internal server error" });
   }
 };
-module.exports = { registerUser, loginUser };
+
+// update profile
+const updateProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+    const [existingUser] = await mySqlPool.query(checkUserQuery, ["", id]);
+    if (existingUser.length == 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const allowedUpdates = ["name", "email", "country", "info", "image"];
+    let setClause = [],
+      values = [];
+    for (key in updates) {
+      if (allowedUpdates.includes(key)) {
+        setClause.push(`${key}=?`);
+        values.push(updates[key]);
+      }
+    }
+    if (setClause.length === 0) {
+      return res.status(400).send({ message: "No valid fields to update" });
+    }
+    values.push[id];
+    const updatedUser = await mySqlPool.query(updateUserQuery, [values]);
+    res.status(200).json({ message: "User updated successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+module.exports = { registerUser, loginUser, updateProfile };
