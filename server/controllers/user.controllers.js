@@ -3,6 +3,7 @@ const {
   registerQuery,
   checkUserQuery,
   updateUserQuery,
+  deleteUserQuery,
 } = require("../sql/user.sql");
 const { generatePassword, checkPassword } = require("../utils/password.js");
 const jwt = require("jsonwebtoken");
@@ -87,4 +88,21 @@ const updateProfile = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-module.exports = { registerUser, loginUser, updateProfile };
+
+// delete user
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [[user]] = await mySqlPool.query(checkUserQuery, ["", id]);
+    if (!user) {
+      return res.status(404).json({ message: "User does not exists" });
+    }
+    await mySqlPool.query(deleteUserQuery, [id]);
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = { registerUser, loginUser, updateProfile, deleteUser };

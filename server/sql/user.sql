@@ -21,4 +21,6 @@ const updateUserQuery=(setClause)=>{
   console.log(q);
   return q;
 }
-module.exports = { registerQuery,checkUserQuery,updateUserQuery };
+
+const deleteUserQuery=`DELETE FROM users WHERE id=?`
+module.exports = { registerQuery,checkUserQuery,updateUserQuery,deleteUserQuery };
