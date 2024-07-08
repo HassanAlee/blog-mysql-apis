@@ -16,5 +16,9 @@ const registerQuery =
 const checkUserQuery =
 "SELECT * FROM users WHERE email=? OR id=?"
 
-const updateUserQuery=`UPDATE users SET ${setClause.join(', ')} WHERE id = ?`;
+const updateUserQuery=(setClause)=>{
+  const q=`UPDATE users SET ${setClause.join(', ')} WHERE id =?`;
+  console.log(q);
+  return q;
+}
 module.exports = { registerQuery,checkUserQuery,updateUserQuery };

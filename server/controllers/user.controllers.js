@@ -77,10 +77,13 @@ const updateProfile = async (req, res) => {
     if (setClause.length === 0) {
       return res.status(400).send({ message: "No valid fields to update" });
     }
-    values.push[id];
-    const updatedUser = await mySqlPool.query(updateUserQuery, [values]);
+    console.log(values);
+    const updatedUser = await mySqlPool.query(updateUserQuery(setClause), [
+      ...values,
+    ]);
     res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
+    // console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
