@@ -18,9 +18,12 @@ const checkUserQuery =
 
 const updateUserQuery=(setClause)=>{
   const q=`UPDATE users SET ${setClause.join(', ')} WHERE id =?`;
-  console.log(q);
   return q;
 }
 
 const deleteUserQuery=`DELETE FROM users WHERE id=?`
-module.exports = { registerQuery,checkUserQuery,updateUserQuery,deleteUserQuery };
+
+const getAllUsersQuery=`
+  SELECT * FROM users;
+`;
+module.exports = { registerQuery,checkUserQuery,updateUserQuery,deleteUserQuery,getAllUsersQuery };

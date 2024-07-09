@@ -4,6 +4,7 @@ const {
   checkUserQuery,
   updateUserQuery,
   deleteUserQuery,
+  getAllUsersQuery,
 } = require("../sql/user.sql");
 const { generatePassword, checkPassword } = require("../utils/password.js");
 const jwt = require("jsonwebtoken");
@@ -78,9 +79,9 @@ const updateProfile = async (req, res) => {
     if (setClause.length === 0) {
       return res.status(400).send({ message: "No valid fields to update" });
     }
-    console.log(values);
     const updatedUser = await mySqlPool.query(updateUserQuery(setClause), [
       ...values,
+      id,
     ]);
     res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
@@ -105,4 +106,24 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, updateProfile, deleteUser };
+// get all users
+const getAllUsers = async (req, res) => {
+  try {
+    let [users] = await mySqlPool.query(getAllUsersQuery);
+    users = users.map((item) => {
+      const { password: pass, ...rest } = item;
+      return rest;
+    });
+    return res.status(200).json({ users });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+module.exports = {
+  registerUser,
+  loginUser,
+  updateProfile,
+  deleteUser,
+  getAllUsers,
+};

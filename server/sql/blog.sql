@@ -54,4 +54,9 @@ WHERE
 const getAuthorBlogsQuery=`
 SELECT blogs.id,blogs.title,blogs.description,blogs.image,blogs.category,DATE_FORMAT(blogs.created, '%Y-%m-%d') AS createdDate,users.name,users.image FROM blogs JOIN users ON blogs.authorId=users.id WHERE blogs.authorId=?;
 `;
-module.exports={addBlogQuery,getAllBlogsQuery,getSingleBlogQuery,getAuthorBlogsQuery}
+
+const updateBlogQuery=(setClause)=>{
+  const q=`UPDATE blogs SET ${setClause.join(', ')} WHERE id =?`;
+  return q;
+}
+module.exports={addBlogQuery,getAllBlogsQuery,getSingleBlogQuery,getAuthorBlogsQuery,updateBlogQuery}

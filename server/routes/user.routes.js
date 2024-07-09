@@ -5,6 +5,7 @@ const {
   loginUser,
   updateProfile,
   deleteUser,
+  getAllUsers,
 } = require("../controllers/user.controllers.js");
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -19,4 +20,5 @@ router.post("/register", upload.single("image"), registerUser);
 router.post("/login", loginUser);
 router.patch("/update-profile/:id", updateProfile);
 router.delete("/delete-profile/:id", deleteUser);
+router.get("/get-all-users", getAllUsers);
 module.exports = router;
