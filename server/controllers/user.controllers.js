@@ -49,7 +49,7 @@ const loginUser = async (req, res) => {
     return res
       .cookie("access_token", token, {
         httpOnly: true,
-        secure: true,
+        secure: false,
       })
       .status(200)
       .json({ message: "Signin successful", user: user[0] });
@@ -85,7 +85,7 @@ const updateProfile = async (req, res) => {
     ]);
     res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

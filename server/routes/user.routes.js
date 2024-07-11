@@ -7,6 +7,7 @@ const {
   deleteUser,
   getAllUsers,
 } = require("../controllers/user.controllers.js");
+const verifyToken = require("../utils/verifyToken.js");
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     return cb(null, "./uploads");
@@ -18,7 +19,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 router.post("/register", upload.single("image"), registerUser);
 router.post("/login", loginUser);
-router.patch("/update-profile/:id", updateProfile);
+router.patch("/update-profile/:id", verifyToken, updateProfile);
 router.delete("/delete-profile/:id", deleteUser);
 router.get("/get-all-users", getAllUsers);
 module.exports = router;

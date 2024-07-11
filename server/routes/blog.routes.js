@@ -6,6 +6,7 @@ const {
   getSingleBlog,
   getAuthorBlogs,
   updateBlog,
+  deleteBlog,
 } = require("../controllers/blog.controllers.js");
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -21,4 +22,5 @@ router.get("/get-blogs", getAllBlogs);
 router.get("/:id", getSingleBlog);
 router.get("/get-author-blogs/:id", getAuthorBlogs);
 router.patch("/update-blog/:id", updateBlog);
+router.delete("/delete-blog/:id", deleteBlog);
 module.exports = router;

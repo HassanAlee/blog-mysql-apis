@@ -59,4 +59,10 @@ const updateBlogQuery=(setClause)=>{
   const q=`UPDATE blogs SET ${setClause.join(', ')} WHERE id =?`;
   return q;
 }
-module.exports={addBlogQuery,getAllBlogsQuery,getSingleBlogQuery,getAuthorBlogsQuery,updateBlogQuery}
+
+const checkBlogQuery=`SELECT * FROM blogs WHERE id=?`;
+
+const deleteBlogQuery=`
+DELETE FROM blogs WHERE id=?;
+`;
+module.exports={addBlogQuery,getAllBlogsQuery,getSingleBlogQuery,getAuthorBlogsQuery,updateBlogQuery,checkBlogQuery,deleteBlogQuery}

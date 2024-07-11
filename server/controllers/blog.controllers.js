@@ -4,6 +4,8 @@ const {
   getSingleBlogQuery,
   getAuthorBlogsQuery,
   updateBlogQuery,
+  checkBlogQuery,
+  deleteBlogQuery,
 } = require("../sql/blog.sql");
 const mySqlPool = require("../config/db");
 // add blog
@@ -82,10 +84,25 @@ const updateBlog = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+// delete blog
+const deleteBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [[thisBlog]] = await mySqlPool.query(checkBlogQuery, [id]);
+    if (!thisBlog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+    await mySqlPool.query(deleteBlogQuery, [id]);
+    return res.status(200).json({ message: "Blog deleted successfully" });
+  } catch (error) {
+    return res.status(200).json({ message: "Internal server error" });
+  }
+};
 module.exports = {
   addBlog,
   getAllBlogs,
   getSingleBlog,
   getAuthorBlogs,
   updateBlog,
+  deleteBlog,
 };
