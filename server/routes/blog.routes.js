@@ -22,6 +22,11 @@ router.post("/add-blog", verifyToken, upload.single("image"), addBlog);
 router.get("/get-blogs", getAllBlogs);
 router.get("/:id", getSingleBlog);
 router.get("/get-author-blogs/:id", getAuthorBlogs);
-router.patch("/update-blog/:id", verifyToken, updateBlog);
+router.patch(
+  "/update-blog/:id",
+  verifyToken,
+  upload.single("image"),
+  updateBlog
+);
 router.delete("/delete-blog/:id", verifyToken, deleteBlog);
 module.exports = router;

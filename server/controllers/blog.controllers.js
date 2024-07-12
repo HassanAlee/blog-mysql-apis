@@ -22,6 +22,7 @@ const addBlog = async (req, res) => {
     ]);
     res.status(200).json({ message: "Blog added successfully" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Failed to add blog" });
   }
 };
@@ -74,8 +75,13 @@ const updateBlog = async (req, res) => {
     if (setClause.length === 0) {
       return res.status(400).send({ message: "No valid fields to update" });
     }
+    if (req.file) {
+      setClause.push("image=?");
+    }
+    const image = "/" + req?.file?.path || "";
     const updatedBlog = await mySqlPool.query(updateBlogQuery(setClause), [
       ...values,
+      image && image,
       id,
     ]);
     return res.status(200).json({ message: "Blog updated successfully" });

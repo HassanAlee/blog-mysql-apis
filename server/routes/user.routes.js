@@ -19,7 +19,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 router.post("/register", upload.single("image"), registerUser);
 router.post("/login", loginUser);
-router.patch("/update-profile/:id", verifyToken, updateProfile);
+router.patch(
+  "/update-profile/:id",
+  verifyToken,
+  upload.single("image"),
+  updateProfile
+);
 router.delete("/delete-profile/:id", verifyToken, deleteUser);
 router.get("/get-all-users", getAllUsers);
 module.exports = router;

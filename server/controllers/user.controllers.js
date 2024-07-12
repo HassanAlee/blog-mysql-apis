@@ -15,7 +15,7 @@ const registerUser = async (req, res) => {
   //   console.log(req.body);
   // console.log(req.file);
   const hashedPassword = await generatePassword(password);
-  const image = "/" + req.file.path || "";
+  const image = "/" + req?.file?.path || "";
   try {
     const user = await mySqlPool.query(registerQuery, [
       name,
@@ -79,8 +79,13 @@ const updateProfile = async (req, res) => {
     if (setClause.length === 0) {
       return res.status(400).send({ message: "No valid fields to update" });
     }
+    if (req.file) {
+      setClause.push("image=?");
+    }
+    const image = "/" + req?.file?.path || "";
     const updatedUser = await mySqlPool.query(updateUserQuery(setClause), [
       ...values,
+      image && image,
       id,
     ]);
     res.status(200).json({ message: "User updated successfully" });
