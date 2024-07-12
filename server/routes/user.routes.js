@@ -20,6 +20,6 @@ const upload = multer({ storage });
 router.post("/register", upload.single("image"), registerUser);
 router.post("/login", loginUser);
 router.patch("/update-profile/:id", verifyToken, updateProfile);
-router.delete("/delete-profile/:id", deleteUser);
+router.delete("/delete-profile/:id", verifyToken, deleteUser);
 router.get("/get-all-users", getAllUsers);
 module.exports = router;

@@ -8,6 +8,7 @@ const {
   updateBlog,
   deleteBlog,
 } = require("../controllers/blog.controllers.js");
+const verifyToken = require("../utils/verifyToken.js");
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     return cb(null, "./uploads");
@@ -17,10 +18,10 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
-router.post("/add-blog", upload.single("image"), addBlog);
+router.post("/add-blog", verifyToken, upload.single("image"), addBlog);
 router.get("/get-blogs", getAllBlogs);
 router.get("/:id", getSingleBlog);
 router.get("/get-author-blogs/:id", getAuthorBlogs);
-router.patch("/update-blog/:id", updateBlog);
-router.delete("/delete-blog/:id", deleteBlog);
+router.patch("/update-blog/:id", verifyToken, updateBlog);
+router.delete("/delete-blog/:id", verifyToken, deleteBlog);
 module.exports = router;
