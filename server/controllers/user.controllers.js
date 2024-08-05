@@ -5,6 +5,16 @@ const jwt = require("jsonwebtoken");
 const registerUser = async (req, res) => {
   try {
     const data = req.body;
+    const existingUser = await prisma.User.findMany({
+      where: {
+        email: data.email,
+      },
+    });
+    if (existingUser.length > 0) {
+      return res
+        .status(400)
+        .json({ message: "User with this email already exists!" });
+    }
     const salt = await passwordUtils.genSalt();
     const hashedPassword = await passwordUtils.hashPassword(
       data.password,
@@ -13,7 +23,6 @@ const registerUser = async (req, res) => {
     const user = await prisma.User.create({
       data: { ...data, password: hashedPassword },
     });
-    console.log(user);
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
