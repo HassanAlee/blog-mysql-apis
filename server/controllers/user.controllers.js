@@ -72,6 +72,33 @@ const loginUser = async (req, res) => {
       .json({ message: "Login successful" });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
+  } finally {
+    prisma.$disconnect();
   }
 };
-module.exports = { registerUser, loginUser };
+// user update profile controller
+const updateProfile = async (req, res) => {
+  const data = req.body;
+  try {
+    const existingUser = await prisma.User.findMany({
+      where: {
+        email: data.email,
+      },
+    });
+    if (!existingUser.length > 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const updatedUser = await prisma.User.update({
+      where: {
+        id: req.user,
+      },
+      data,
+    });
+    res.status(200).json({ message: "User updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  } finally {
+    prisma.$disconnect();
+  }
+};
+module.exports = { registerUser, loginUser, updateProfile };

@@ -2,6 +2,7 @@ const express = require("express");
 require("dotenv").config();
 const { PrismaClient } = require("@prisma/client");
 const userRoutes = require("./routes/user.routes.js");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -10,6 +11,7 @@ const prisma = new PrismaClient();
 // Middleware to parse JSON bodies
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 //  API endpoint
 app.use("/api/v1/user", userRoutes);
