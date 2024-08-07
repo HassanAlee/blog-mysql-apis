@@ -82,7 +82,7 @@ const updateProfile = async (req, res) => {
   try {
     const existingUser = await prisma.User.findMany({
       where: {
-        email: data.email,
+        id: req.user,
       },
     });
     if (!existingUser.length > 0) {
@@ -101,4 +101,50 @@ const updateProfile = async (req, res) => {
     prisma.$disconnect();
   }
 };
-module.exports = { registerUser, loginUser, updateProfile };
+// delete user controller
+const deleteUser = async (req, res) => {
+  const id = req.user;
+  try {
+    const checkUser = await prisma.User.findMany({
+      where: {
+        id: id,
+      },
+    });
+    if (!checkUser.length > 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    await prisma.user.delete({
+      where: {
+        id: id,
+      },
+    });
+    res.status(200).json({ message: "Account deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+  } finally {
+    prisma.$disconnect();
+  }
+};
+// get all users
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        name: true,
+        email: true,
+        image: true,
+        info: true,
+      },
+    });
+    res.status(200).json({ users });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+module.exports = {
+  registerUser,
+  loginUser,
+  updateProfile,
+  deleteUser,
+  getAllUsers,
+};
