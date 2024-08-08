@@ -2,6 +2,7 @@ const express = require("express");
 require("dotenv").config();
 const { PrismaClient } = require("@prisma/client");
 const userRoutes = require("./routes/user.routes.js");
+const blogRoutes = require("./routes/blog.routes.js");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(cookieParser());
 
 //  API endpoint
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/blog", blogRoutes);
 async function main() {
   try {
     // Connect to the PostgreSQL database

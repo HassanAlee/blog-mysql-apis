@@ -12,12 +12,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 // user model
-model User{
-  id Int @id  @default (autoincrement())
-  name String
-  email String @unique
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
   password String
-  country String
-  info String?
-  image String?
+  country  String
+  info     String?
+  image    String?
+  blogs    Blog[] // Relation field
+}
+
+model Blog {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  image       String
+  authorId    Int      // Changed to Int to match User id type
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade) // Relation attribute
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
