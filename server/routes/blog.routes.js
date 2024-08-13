@@ -7,4 +7,5 @@ router
   .post(verifyToken, blogController.addBlog)
   .get(blogController.getAllBlogs);
 router.route("/:id").get(blogController.getAuthorBlogs);
+router.get("/get-blog/:id", blogController.getSingleBlog);
 module.exports = router;

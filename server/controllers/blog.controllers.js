@@ -17,8 +17,21 @@ const addBlog = async (req, res) => {
 // get all blogs
 const getAllBlogs = async (req, res) => {
   try {
-    const blogs = await prisma.blog.findMany();
-    res.status(200).json({ blogs });
+    const blogs = await prisma.blog.findMany({
+      include: {
+        author: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
+      },
+    });
+    const filterBlogs = blogs.map((blog) => {
+      const { authorId, ...rest } = blog;
+      return rest;
+    });
+    res.status(200).json({ blogs: filterBlogs });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong" });
@@ -34,8 +47,20 @@ const getAuthorBlogs = async (req, res) => {
       where: {
         authorId: Number(id),
       },
+      include: {
+        author: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
+      },
     });
-    res.status(200).json({ blogs });
+    const filterBlogs = blogs.map((blog) => {
+      const { authorId, ...rest } = blog;
+      return rest;
+    });
+    res.status(200).json({ blogs: filterBlogs });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong" });
@@ -43,4 +68,32 @@ const getAuthorBlogs = async (req, res) => {
     prisma.$disconnect();
   }
 };
-module.exports = { addBlog, getAllBlogs, getAuthorBlogs };
+// get single blog
+const getSingleBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const blog = await prisma.blog.findUnique({
+      where: {
+        id: Number(id),
+      },
+      include: {
+        author: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
+      },
+    });
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+    // Exclude authorId from the response
+    const { authorId, ...blogWithoutAuthorId } = blog;
+    res.status(200).json({ blog: blogWithoutAuthorId });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+module.exports = { addBlog, getAllBlogs, getAuthorBlogs, getSingleBlog };
