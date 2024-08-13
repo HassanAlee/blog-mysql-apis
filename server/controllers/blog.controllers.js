@@ -96,4 +96,51 @@ const getSingleBlog = async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 };
-module.exports = { addBlog, getAllBlogs, getAuthorBlogs, getSingleBlog };
+// update blog
+const updateBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedBlog = await prisma.blog.update({
+      where: {
+        id: Number(id),
+      },
+      data: req.body,
+    });
+    return res.status(200).json({ updatedBlog });
+  } catch (error) {
+    if (error.code === "P2025") {
+      // Prisma error code for record not found
+      return res.status(404).json({ message: "Blog not found" });
+    }
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+// delete blog
+const deleteBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const blog = await prisma.blog.delete({
+      where: {
+        id: Number(id),
+      },
+    });
+    return res.status(200).json({ message: "Blog deleted successfully" });
+  } catch (error) {
+    if (error.code === "P2025") {
+      // Prisma error code for record not found
+      return res.status(404).json({ message: "Blog not found" });
+    }
+    console.log(error); // Optional: Log the error for debugging
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+module.exports = {
+  addBlog,
+  getAllBlogs,
+  getAuthorBlogs,
+  getSingleBlog,
+  updateBlog,
+  deleteBlog,
+};

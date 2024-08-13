@@ -6,6 +6,10 @@ router
   .route("/")
   .post(verifyToken, blogController.addBlog)
   .get(blogController.getAllBlogs);
-router.route("/:id").get(blogController.getAuthorBlogs);
+router
+  .route("/:id")
+  .get(blogController.getAuthorBlogs)
+  .patch(verifyToken, blogController.updateBlog)
+  .delete(verifyToken, blogController.deleteBlog);
 router.get("/get-blog/:id", blogController.getSingleBlog);
 module.exports = router;
