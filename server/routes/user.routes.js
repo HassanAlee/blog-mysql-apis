@@ -2,7 +2,8 @@ const express = require("express");
 const verifyToken = require("../middlewares/verifyToken.js");
 const router = express.Router();
 const userControllers = require("../controllers/user.controllers.js");
-router.post("/register", userControllers.registerUser);
+const upload = require("../utils/upload.js");
+router.post("/register", upload.single("image"), userControllers.registerUser);
 router.post("/login", userControllers.loginUser);
 router
   .route("/")

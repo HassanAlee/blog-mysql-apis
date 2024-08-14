@@ -2,6 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const passwordUtils = require("../utils/password");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
 // user registration controller
 const registerUser = async (req, res) => {
   try {
@@ -12,6 +13,10 @@ const registerUser = async (req, res) => {
       },
     });
     if (existingUser.length > 0) {
+      // Delete the uploaded file if user already exists
+      if (req.file) {
+        fs.unlinkSync(req.file.path);
+      }
       return res
         .status(400)
         .json({ message: "User with this email already exists!" });
@@ -22,7 +27,7 @@ const registerUser = async (req, res) => {
       salt
     );
     const user = await prisma.User.create({
-      data: { ...data, password: hashedPassword },
+      data: { ...data, password: hashedPassword, image: req.file.path },
     });
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: "1d",

@@ -4,7 +4,7 @@ const { PrismaClient } = require("@prisma/client");
 const userRoutes = require("./routes/user.routes.js");
 const blogRoutes = require("./routes/blog.routes.js");
 const cookieParser = require("cookie-parser");
-
+const path = require("path");
 const app = express();
 const port = process.env.PORT || 3000;
 const prisma = new PrismaClient();
@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 //  API endpoint
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/blog", blogRoutes);
