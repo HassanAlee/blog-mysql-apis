@@ -123,6 +123,9 @@ const deleteUser = async (req, res) => {
     if (!checkUser.length > 0) {
       return res.status(404).json({ message: "User not found" });
     }
+    if (checkUser[0].image) {
+      fs.unlinkSync(checkUser[0].image);
+    }
     await prisma.user.delete({
       where: {
         id: id,
