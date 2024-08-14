@@ -7,7 +7,7 @@ router.post("/register", upload.single("image"), userControllers.registerUser);
 router.post("/login", userControllers.loginUser);
 router
   .route("/")
-  .patch(verifyToken, userControllers.updateProfile)
+  .patch(verifyToken, upload.single("image"), userControllers.updateProfile)
   .delete(verifyToken, userControllers.deleteUser)
   .get(userControllers.getAllUsers);
 module.exports = router;

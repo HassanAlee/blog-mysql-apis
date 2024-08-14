@@ -93,11 +93,16 @@ const updateProfile = async (req, res) => {
     if (!existingUser.length > 0) {
       return res.status(404).json({ message: "User not found" });
     }
+    if (req.file) {
+      if (existingUser[0].image) {
+        fs.unlinkSync(existingUser[0].image);
+      }
+    }
     const updatedUser = await prisma.User.update({
       where: {
         id: req.user,
       },
-      data,
+      data: { ...data, image: req.file.path },
     });
     res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
