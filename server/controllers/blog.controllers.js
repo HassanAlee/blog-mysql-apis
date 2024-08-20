@@ -1,14 +1,16 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const fs = require("fs");
 // add blog controller
 const addBlog = async (req, res) => {
   try {
     const data = req.body;
     const newBlog = await prisma.blog.create({
-      data,
+      data: { ...data, authorId: Number(data.authorId), image: req.file.path },
     });
     res.status(201).json({ message: "Blog added successfully" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Something went wrong" });
   } finally {
     prisma.$disconnect();
@@ -100,11 +102,24 @@ const getSingleBlog = async (req, res) => {
 const updateBlog = async (req, res) => {
   try {
     const { id } = req.params;
+    const existingBlog = await prisma.blog.findFirst({
+      where: {
+        id: Number(id),
+      },
+    });
+    if (!existingBlog) {
+      return res.status(404).json({ message: "Blog does not exist" });
+    }
+    if (req.file) {
+      if (existingBlog.image) {
+        fs.unlinkSync(existingBlog.image);
+      }
+    }
     const updatedBlog = await prisma.blog.update({
       where: {
         id: Number(id),
       },
-      data: req.body,
+      data: { ...req.body, image: req.file.path },
     });
     return res.status(200).json({ updatedBlog });
   } catch (error) {
@@ -120,6 +135,17 @@ const updateBlog = async (req, res) => {
 const deleteBlog = async (req, res) => {
   try {
     const { id } = req.params;
+    const existingBlog = await prisma.blog.findFirst({
+      where: {
+        id: Number(id),
+      },
+    });
+    if (!existingBlog) {
+      return res.status(404).json({ message: "Blog does not exist" });
+    }
+    if (existingBlog.image) {
+      fs.unlinkSync(existingBlog.image);
+    }
     const blog = await prisma.blog.delete({
       where: {
         id: Number(id),
